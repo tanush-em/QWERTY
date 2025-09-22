@@ -1,33 +1,54 @@
-# case study on ontology
-import pandas as pd
+# Obj detection for traffic using cnn
+import os
+import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
-from aif360.datasets import BinaryLabelDataset
-from aif360.algorithms.preprocessing import Reweighing
-from aif360.metrics import BinaryLabelDatasetMetric
-
-np.random.seed(42)
-n_samples = 200
-gender = np.random.randint(0, 2, n_samples)
-age = np.random.randint(20, 80, n_samples)
-condition_severity = np.random.rand(n_samples) * 10
-labels = (condition_severity + gender*0.5 + age/100 > 8).astype(int)
-df = pd.DataFrame({'gender': gender, 'age': age, 'condition_severity': condition_severity, 'label': labels})
-dataset = BinaryLabelDataset(df=df, label_names=['label'], protected_attribute_names=['gender'])
-train, test = dataset.split([0.7], shuffle=True, seed=42)
-model_orig = RandomForestClassifier(random_state=42)
-model_orig.fit(train.features, train.labels.ravel())
-pred_orig = model_orig.predict(test.features)
-test_pred_orig = test.copy()
-test_pred_orig.labels = pred_orig.reshape(-1, 1)
-metric_orig = BinaryLabelDatasetMetric(test_pred_orig, privileged_groups=[{'gender': 1}], unprivileged_groups=[{'gender': 0}])
-print("Original Model Bias (Disparate Impact):", metric_orig.disparate_impact())
-rew = Reweighing(unprivileged_groups=[{'gender': 0}], privileged_groups=[{'gender': 1}])
-train_rw = rew.fit_transform(train)
-model_rw = RandomForestClassifier(random_state=42)
-model_rw.fit(train_rw.features, train_rw.labels.ravel())
-pred_rw = model_rw.predict(test.features)
-test_pred_rw = test.copy()
-test_pred_rw.labels = pred_rw.reshape(-1, 1)
-metric_rw = BinaryLabelDatasetMetric(test_pred_rw, privileged_groups=[{'gender': 1}], unprivileged_groups=[{'gender': 0}])
-print("Model After Reweighing Bias (Disparate Impact):", metric_rw.disparate_impact())
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from keras.models import Sequential
+from keras.utils import load_img, img_to_array, to_categorical
+from sklearn.model_selection import train_test_split
+dataset_path = 'datasets/5-TRAFFIC-ANALYSIS-CNN'
+image_width, image_height = 64, 64
+num_classes = len(os.listdir(dataset_path))
+X, y = [], []
+class_names = {}
+for class_name in os.listdir(dataset_path):
+    if class_name not in class_names:
+        class_names[class_name] = len(class_names)
+    class_path = os.path.join(dataset_path, class_name)
+    for image_name in os.listdir(class_path):
+        image_path = os.path.join(class_path, image_name)
+        image = load_img(image_path, target_size=(image_width, image_height))
+        image = img_to_array(image)
+        X.append(image)
+        y.append(class_names[class_name])
+X = np.array(X) / 255.0
+X_train, X_test, y_train, y_test = train_test_split(X, to_categorical(y, num_classes=num_classes), test_size=0.2)
+model = Sequential([
+    Conv2D(32, (3,3), activation='relu', input_shape=(image_width, image_height, 3)),
+    MaxPooling2D(2,2),
+    Conv2D(64, (3,3), activation='relu'),
+    MaxPooling2D(2,2),
+    Conv2D(128, (3,3), activation='relu'),
+    MaxPooling2D(2,2),
+    Flatten(),
+    Dense(512, activation='relu'),
+    Dense(num_classes, activation='sigmoid')
+])
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.summary()
+model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=0)
+score, acc = model.evaluate(X_test, y_test, verbose=0)
+print(f"Score: {(score*100):.2f}% | Accuracy: {(acc*100):.2f}%")
+random_indexes = np.random.choice(len(X_test), size=9)
+reverse_map = {v:k for k,v in class_names.items()}
+y_pred = model.predict(X_test[random_indexes], verbose=0)
+y_pred_class = [reverse_map[np.argmax(y)] for y in y_pred]
+y_test = np.argmax(y_test[random_indexes], axis=1)
+y_test_class = [reverse_map[y] for y in y_test]
+fig, ax = plt.subplots(3,3, figsize=(10,10))
+for i, index in enumerate(random_indexes):
+    ax[i // 3, i % 3].imshow(X_test[index])
+    ax[i // 3, i % 3].set_title(f"Predicted: {y_pred_class[i]}\nActual: {y_test_class[i]}")
+    ax[i // 3, i % 3].axis('off')
+plt.tight_layout()
+plt.show()
