@@ -4,16 +4,16 @@ Student management tools for CSE-AIML ERP MCP Server.
 import logging
 from typing import Any, Dict, List, Optional
 from datetime import datetime
-from mcp.server.models import Tool
+from mcp import Tool
 from mcp.server import Server
 from pymongo.errors import DuplicateKeyError
 
-from ..database import get_db_operations
-from ..utils.validators import (
+from database import get_db_operations
+from utils.validators import (
     validate_student_data, validate_object_id, validate_pagination_params,
     validate_search_query, validate_roll_number
 )
-from ..utils.formatters import (
+from utils.formatters import (
     format_student_data, format_success_response, format_error_response,
     format_paginated_response
 )
@@ -169,8 +169,7 @@ async def create_student(
         if validation_errors:
             return format_error_response(
                 ValueError("Validation failed"),
-                "Validation failed",
-                errors=[str(error) for error_list in validation_errors.values() for error in error_list]
+                "Validation failed"
             )
         
         # Get database operations
@@ -278,8 +277,7 @@ async def update_student(
             if validation_errors:
                 return format_error_response(
                     ValueError("Validation failed"),
-                    "Validation failed",
-                    errors=[str(error) for error_list in validation_errors.values() for error in error_list]
+                    "Validation failed"
                 )
         
         # Update student

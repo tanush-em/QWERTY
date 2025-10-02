@@ -4,10 +4,10 @@ Analytics and reporting tools for CSE-AIML ERP MCP Server.
 import logging
 from typing import Any, Dict, List, Optional
 from datetime import datetime, timedelta
-from mcp.server.models import Tool
+from mcp import Tool
 
-from ..database import get_db_operations
-from ..utils.formatters import format_success_response, format_error_response
+from database import get_db_operations
+from utils.formatters import format_success_response, format_error_response
 
 logger = logging.getLogger(__name__)
 

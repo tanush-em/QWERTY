@@ -4,14 +4,14 @@ Leave management tools for CSE-AIML ERP MCP Server.
 import logging
 from typing import Any, Dict, List, Optional
 from datetime import datetime, date
-from mcp.server.models import Tool
+from mcp import Tool
 
-from ..database import get_db_operations
-from ..utils.validators import (
+from database import get_db_operations
+from utils.validators import (
     validate_leave_data, validate_object_id, validate_pagination_params,
     validate_search_query, validate_leave_status, validate_date_range
 )
-from ..utils.formatters import (
+from utils.formatters import (
     format_leave_data, format_success_response, format_error_response,
     format_paginated_response
 )

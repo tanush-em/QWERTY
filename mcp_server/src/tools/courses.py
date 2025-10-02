@@ -4,15 +4,15 @@ Course management tools for CSE-AIML ERP MCP Server.
 import logging
 from typing import Any, Dict, List, Optional
 from datetime import datetime
-from mcp.server.models import Tool
+from mcp import Tool
 from pymongo.errors import DuplicateKeyError
 
-from ..database import get_db_operations
-from ..utils.validators import (
+from database import get_db_operations
+from utils.validators import (
     validate_course_data, validate_object_id, validate_pagination_params,
     validate_search_query, validate_course_code, validate_credits, validate_semester
 )
-from ..utils.formatters import (
+from utils.formatters import (
     format_course_data, format_success_response, format_error_response,
     format_paginated_response
 )

@@ -3,6 +3,7 @@ Database connection and management for CSE-AIML ERP MCP Server.
 """
 import asyncio
 import logging
+import sys
 from typing import Optional, Dict, Any, List
 from contextlib import asynccontextmanager
 from pymongo import MongoClient
@@ -11,8 +12,14 @@ from pymongo.database import Database
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from bson import ObjectId
 from bson.errors import InvalidId
-from .config import get_mongo_uri, get_database_name, settings
+from config import get_mongo_uri, get_database_name, settings
 
+# Configure logging to stderr to avoid breaking MCP protocol
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    stream=sys.stderr
+)
 logger = logging.getLogger(__name__)
 
 
@@ -80,7 +87,7 @@ class DatabaseManager:
     
     def get_collection(self, collection_name: str) -> Collection:
         """Get MongoDB collection."""
-        if not self.database:
+        if self.database is None:
             raise ConnectionFailure("Database not connected")
         return self.database[collection_name]
     
@@ -211,6 +218,17 @@ class DatabaseOperations:
             return result.deleted_count > 0
         except Exception as e:
             logger.error(f"Error deleting document in {collection_name}: {e}")
+            raise
+    
+    async def delete_many(self, collection_name: str, query: Dict[str, Any] = None) -> int:
+        """Delete multiple documents."""
+        try:
+            collection = self.db_manager.get_collection(collection_name)
+            loop = asyncio.get_event_loop()
+            result = await loop.run_in_executor(None, collection.delete_many, query or {})
+            return result.deleted_count
+        except Exception as e:
+            logger.error(f"Error deleting documents in {collection_name}: {e}")
             raise
     
     async def count_documents(self, collection_name: str, query: Dict[str, Any] = None) -> int:

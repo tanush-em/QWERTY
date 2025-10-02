@@ -4,14 +4,14 @@ Timetable management tools for CSE-AIML ERP MCP Server.
 import logging
 from typing import Any, Dict, List, Optional
 from datetime import datetime, time
-from mcp.server.models import Tool
+from mcp import Tool
 
-from ..database import get_db_operations
-from ..utils.validators import (
+from database import get_db_operations
+from utils.validators import (
     validate_timetable_data, validate_object_id, validate_pagination_params,
     validate_day_of_week, validate_time_format, validate_course_code
 )
-from ..utils.formatters import (
+from utils.formatters import (
     format_timetable_data, format_success_response, format_error_response,
     format_paginated_response
 )
