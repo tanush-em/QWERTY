@@ -50,14 +50,19 @@ export default function Home() {
     }
   };
 
-  const getCollectionIcon = (collectionName) => {
-    const name = collectionName.toLowerCase();
-    if (name.includes('user') || name.includes('employee')) return <Users className="w-5 h-5" />;
-    if (name.includes('attendance') || name.includes('time')) return <Calendar className="w-5 h-5" />;
-    if (name.includes('course') || name.includes('training')) return <BookOpen className="w-5 h-5" />;
-    if (name.includes('leave') || name.includes('holiday')) return <Calendar className="w-5 h-5" />;
-    if (name.includes('analytics') || name.includes('report')) return <TrendingUp className="w-5 h-5" />;
-    return <Database className="w-5 h-5" />;
+  const getCollectionIcon = (iconType) => {
+    switch (iconType) {
+      case 'users':
+        return <Users className="w-5 h-5" />;
+      case 'calendar':
+        return <Calendar className="w-5 h-5" />;
+      case 'book':
+        return <BookOpen className="w-5 h-5" />;
+      case 'clock':
+        return <TrendingUp className="w-5 h-5" />;
+      default:
+        return <Database className="w-5 h-5" />;
+    }
   };
 
   const renderValue = (value) => {
@@ -122,14 +127,19 @@ export default function Home() {
                       <button
                         key={collection.name}
                         onClick={() => fetchCollectionData(collection.name)}
-                        className={`w-full text-left p-3 rounded-lg transition-colors flex items-center space-x-3 ${
+                        className={`w-full text-left p-3 rounded-lg transition-colors ${
                           selectedCollection === collection.name
                             ? 'bg-blue-50 text-blue-700 border border-blue-200'
                             : 'hover:bg-gray-50 text-gray-700'
                         }`}
                       >
-                        {getCollectionIcon(collection.name)}
-                        <span className="font-medium">{collection.name}</span>
+                        <div className="flex items-center space-x-3">
+                          {getCollectionIcon(collection.icon)}
+                          <div className="flex-1">
+                            <div className="font-medium">{collection.displayName}</div>
+                            <div className="text-xs text-gray-500 mt-1">{collection.description}</div>
+                          </div>
+                        </div>
                       </button>
                     ))}
                   </div>

@@ -1,22 +1,52 @@
 import connectDB from '@/lib/mongodb';
-import mongoose from 'mongoose';
+
+// Define the collections we want to show with their metadata
+const COLLECTIONS = [
+  {
+    name: 'students',
+    displayName: 'Students',
+    description: 'Student information and details',
+    icon: 'users'
+  },
+  {
+    name: 'faculties',
+    displayName: 'Faculties',
+    description: 'Faculty and teacher information',
+    icon: 'users'
+  },
+  {
+    name: 'courses',
+    displayName: 'Courses',
+    description: 'Course catalog and information',
+    icon: 'book'
+  },
+  {
+    name: 'attendances',
+    displayName: 'Attendance',
+    description: 'Student attendance records',
+    icon: 'calendar'
+  },
+  {
+    name: 'leaverequests',
+    displayName: 'Leave Requests',
+    description: 'Student leave applications',
+    icon: 'calendar'
+  },
+  {
+    name: 'timetables',
+    displayName: 'Timetable',
+    description: 'Class schedules and timetables',
+    icon: 'clock'
+  }
+];
 
 export async function GET() {
   try {
     await connectDB();
     
-    // Get all collections in the database
-    const db = mongoose.connection.db;
-    const collections = await db.listCollections().toArray();
-    
-    const collectionNames = collections.map(collection => ({
-      name: collection.name,
-      type: collection.type || 'collection'
-    }));
-    
     return Response.json({ 
       success: true, 
-      collections: collectionNames 
+      collections: COLLECTIONS
     });
   } catch (error) {
     console.error('Error fetching collections:', error);
