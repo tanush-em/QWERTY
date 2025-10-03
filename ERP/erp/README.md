@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ERP Portal
+
+A modern Enterprise Resource Planning (ERP) dashboard built with Next.js and MongoDB. This portal provides a clean interface to view and manage data from your MongoDB database.
+
+## Features
+
+- 🔍 **Collection Browser**: View all MongoDB collections in your database
+- 📊 **Data Visualization**: Clean table display of collection data
+- 🎨 **Modern UI**: Beautiful, responsive design with Tailwind CSS
+- 🔄 **Real-time Updates**: Refresh data and collections on demand
+- 📱 **Mobile Responsive**: Works seamlessly on all devices
+
+## Prerequisites
+
+- Node.js 18+ 
+- MongoDB running on `localhost:27017` with database named `erp`
 
 ## Getting Started
 
-First, run the development server:
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Set up Environment Variables** (Optional)
+   Create a `.env.local` file in the root directory:
+   ```bash
+   MONGODB_URI=mongodb://localhost:27017/erp
+   ```
+   
+   If you don't create this file, the app will use the default MongoDB URI.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Start MongoDB**
+   Make sure MongoDB is running on your system:
+   ```bash
+   # Using MongoDB service
+   brew services start mongodb-community
+   
+   # Or start MongoDB directly
+   mongod
+   ```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+4. **Run the Development Server**
+   ```bash
+   npm run dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. **Open the Application**
+   Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+1. **View Collections**: The sidebar shows all collections in your MongoDB database
+2. **Browse Data**: Click on any collection to view its data in a clean table format
+3. **Refresh**: Use the refresh button to reload collections and data
+4. **Responsive**: The interface adapts to different screen sizes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Database Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application will automatically detect and display any collections in your MongoDB database. Common ERP collections might include:
 
-## Deploy on Vercel
+- `employees` - Employee information
+- `attendance` - Attendance records
+- `leaves` - Leave applications
+- `courses` - Training courses
+- `departments` - Department information
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## API Endpoints
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `GET /api/collections` - Fetch all collections
+- `GET /api/data/[collection]` - Fetch data from a specific collection
+
+## Technology Stack
+
+- **Frontend**: Next.js 15, React 19, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: MongoDB with Mongoose
+- **Icons**: Lucide React
+
+## Future Enhancements
+
+This is a foundation for your ERP system. You can extend it with:
+- Analytics and reporting dashboards
+- Data entry forms
+- User authentication
+- Advanced filtering and search
+- Export functionality
+- Real-time updates
+
+## Contributing
+
+Feel free to submit issues and enhancement requests!
