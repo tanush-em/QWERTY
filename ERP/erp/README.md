@@ -90,3 +90,5 @@ This is a foundation for your ERP system. You can extend it with:
 ## Contributing
 
 Feel free to submit issues and enhancement requests!
+
+the erp portal looks very poor, the tables shown are just displaying the json. But i want you to understand each data and design the UI accordingly, make a sidebar SHOWING THH EFEATURES IN THE ERP . Ex: for Attendance use the data to be displayed in a monthly calendar like UI. foR TIMETABLES DISPLAY THEM AS GRID LIKE INTERFACE. SO, UBDERSTAND EACH DATA AND DISPLAY THEM ACCORDLINGLY IN A MODERN WAY. DO IT ONW BY ONE, NO ISSUES
